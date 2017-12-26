@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class ToDoListViewController: UITableViewController {
     
@@ -22,6 +23,8 @@ class ToDoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.separatorStyle = .none
+        tableView.rowHeight = 80.0
     }
     
     //MARK - Tableview DataSource Methods
@@ -35,8 +38,17 @@ class ToDoListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
         if let item = toDoItems?[indexPath.row] {
+            
             cell.textLabel?.text = item.title
             cell.accessoryType =  item.isSelected ? .checkmark : .none
+            
+            let divPer = CGFloat(indexPath.row) / CGFloat(toDoItems!.count)
+            
+            if let color = UIColor(hexString: selectedCategory!.color)?.darken(byPercentage: divPer){
+                cell.backgroundColor = color
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            }
+            
         } else {
             cell.textLabel?.text = "No Items added yet"
         }
